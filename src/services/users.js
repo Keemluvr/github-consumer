@@ -6,5 +6,9 @@ export default {
      */
     list: (link) => {
         return api.get(link)
+    },
+
+    userCreatedAt: ( username ) => {
+        return api.get(`/users/${username}`)
     }
 }

@@ -1,8 +1,10 @@
 <template>
-  <div class="home">
+  <div class="users">
     <!-- user listing -->
     <div v-for="user in api" :key="user.id" class="user">
-      <p>{{ user.id }} - {{ user.login }}</p>
+      <router-link :to="{ name:'userDetail', params: { login: user.login, user: user } }">
+        <p>{{ user.id }} - {{ user.login }}</p>
+      </router-link>
     </div>
     <!-- pagination -->
     <PaginationUser />
@@ -16,7 +18,7 @@ import fetchData from "@/mixins/fetchData.js";
 import EventBus from "../eventBus";
 
 export default {
-  name: "home",
+  name: "users",
   mixins:[fetchData],
   components: {
     PaginationUser
