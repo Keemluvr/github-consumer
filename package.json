@@ -13,18 +13,18 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-feather-icons": "^5.0.0",
-    "vue-router": "^3.2.0"
+    "vue-router": "^3.3.4"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.4.0",
-    "@vue/cli-plugin-eslint": "~4.4.0",
-    "@vue/cli-plugin-router": "~4.4.0",
-    "@vue/cli-plugin-unit-mocha": "~4.4.0",
-    "@vue/cli-service": "~4.4.0",
+    "@vue/cli-plugin-babel": "~4.4.4",
+    "@vue/cli-plugin-eslint": "~4.4.4",
+    "@vue/cli-plugin-router": "~4.4.4",
+    "@vue/cli-plugin-unit-mocha": "~4.4.4",
+    "@vue/cli-service": "~4.4.4",
     "@vue/test-utils": "^1.0.3",
     "babel-eslint": "^10.1.0",
-    "chai": "^4.1.2",
-    "eslint": "^6.7.2",
+    "chai": "^4.2.0",
+    "eslint": "^7.3.0",
     "eslint-plugin-vue": "^6.2.2",
     "vue-template-compiler": "^2.6.11"
   }

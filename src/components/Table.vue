@@ -34,7 +34,7 @@ import EventBus from "../eventBus";
 import Loading from "@/components/Loading";
 
 export default {
-  name: "tableRepositories",
+  name: "table",
   data() {
     return {
       gridColumns: [],
@@ -58,6 +58,8 @@ export default {
 <style scoped>
 .content-table {
   overflow-x: auto;
+  display: flex;
+  justify-content: center;
 }
 
 table {

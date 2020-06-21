@@ -19,7 +19,7 @@
           <GithubIcon size="1.5x" class="user-icon-social"></GithubIcon>
         </a>
       </div>
-      <TableRepositories class="table" />
+      <Table class="table" />
       <Pagination class="pagination" />
     </div>
   </div>
@@ -36,7 +36,6 @@ import { GithubIcon } from "vue-feather-icons";
 import { ArrowLeftIcon } from "vue-feather-icons";
 
 import Navbar from "@/components/Navbar";
-import TableRepositories from "@/components/TableRepositories";
 import Pagination from "@/components/Pagination";
 
 export default {
@@ -53,7 +52,7 @@ export default {
     UserIcon,
     GithubIcon,
     ArrowLeftIcon,
-    TableRepositories,
+    'Table': () => import('../components/Table'),
     Pagination
   },
   data() {

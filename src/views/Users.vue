@@ -60,7 +60,6 @@ export default {
       EventBus.$emit("disablePrevious", false);
       EventBus.$emit("disableNext", false);
       this.previousPagination.push(this.api);
-      console.log(this.previousPagination.length);
       this.previousPaginationUser = this.previousPagination[
         this.previousPagination.length - 1
       ][0].id;
