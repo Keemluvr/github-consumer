@@ -36,7 +36,7 @@ import { GithubIcon } from "vue-feather-icons";
 import { ArrowLeftIcon } from "vue-feather-icons";
 
 import Navbar from "@/components/Navbar";
-import TableRepositories from "@/components/TableRepositories";
+import TableRepositories from "../components/TableRepositories";
 import Pagination from "@/components/Pagination";
 
 export default {

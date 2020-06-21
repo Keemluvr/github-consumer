@@ -58,6 +58,8 @@ export default {
 <style scoped>
 .content-table {
   overflow-x: auto;
+  display: flex;
+  justify-content: center;
 }
 
 table {
