@@ -152,9 +152,7 @@ export default {
 }
 
 .pagination {
-  margin: 0 auto;
-  padding: 10px 0 30px 25%;
-  text-align: center;
+  margin: 20px auto 40px auto;
 }
 
 .loading {

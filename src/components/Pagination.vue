@@ -43,6 +43,7 @@ export default {
   ul {
     list-style: none;
     display: flex;
+    justify-content: center;
   }
 
   li:first-child {

@@ -11,29 +11,34 @@
         <span>Created at</span>
         <p>{{ this.userMoreDetail.created_at | formatDate }}</p>
       </div>
-      <a :href="this.userMoreDetail.html_url">
+      <a :href="this.userMoreDetail.html_url" target="_blank">
         <GithubIcon size="1.5x" class="user-icon-social"></GithubIcon>
       </a>
     </div>
-   
+
     <!-- table repositories -->
-    <table class="table">
-      <thead>
-        <tr>
-          <th v-for="column in gridColumns" :key="column">
-            {{ column }}
-            <span class="arrow"></span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="repository in repositoriesList" :key="repository.id">
-          <td>{{ repository.id }}</td>
-          <td>{{ repository.name }}</td>
-          <td>{{ repository.url }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="content-table">
+      <table class="table">
+        <thead>
+          <tr>
+            <th v-for="column in gridColumns" :key="column">
+              {{ column }}
+              <span class="arrow"></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="repository in repositoriesList" :key="repository.id">
+            <td>{{ repository.id }}</td>
+            <td>{{ repository.name }}</td>
+            <td>
+              <a class="repository-link" :href="repository.html_url" target="_blank">Link</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <!-- pagination -->
     <Pagination class="pagination" />
   </div>
@@ -43,9 +48,9 @@
 import users from "@/services/users.js";
 import repositories from "@/services/repositories.js";
 import Navbar from "@/components/Navbar";
-import { UserIcon } from 'vue-feather-icons';
-import { GithubIcon } from 'vue-feather-icons'
-import { ArrowLeftIcon } from 'vue-feather-icons'
+import { UserIcon } from "vue-feather-icons";
+import { GithubIcon } from "vue-feather-icons";
+import { ArrowLeftIcon } from "vue-feather-icons";
 import Pagination from "@/components/Pagination";
 import EventBus from "../eventBus";
 import parser from "@/utils/linkParser.js";
@@ -63,19 +68,19 @@ export default {
     UserIcon,
     GithubIcon,
     ArrowLeftIcon,
-    Pagination,
+    Pagination
   },
   data() {
     return {
       userMoreDetail: {},
       gridColumns: ["ID", "Name", "URL repository"],
       repositoriesList: [],
-      pagination: ''
+      pagination: ""
     };
   },
   methods: {
     backRouter() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     getMoreInfosUser() {
       users
@@ -88,16 +93,16 @@ export default {
           console.log(err, "aaaaaaaaa");
         });
     },
-    getRepositories( link ) {
+    getRepositories(link) {
       repositories
         .list(link)
         .then(response => {
-          this.pagination = parser(response.headers.link)
-          console.log('----------')
-          console.log(this.pagination.first)
-          console.log(this.pagination.prev)
-          console.log(this.pagination.next)
-          console.log(this.pagination.last)
+          this.pagination = parser(response.headers.link);
+          console.log("----------");
+          console.log(this.pagination.first);
+          console.log(this.pagination.prev);
+          console.log(this.pagination.next);
+          console.log(this.pagination.last);
           this.repositoriesList = response.data;
         })
         .catch(err => {
@@ -109,16 +114,22 @@ export default {
      */
     nextPage() {
       // Check if it's on the last page
-      if(this.pagination.next == undefined && this.pagination.last == undefined){
-        this.getRepositories(this.pagination.next)
-        EventBus.$emit("disableNext")
-      // Check if it's on the first page
-      } else if(this.pagination.first == undefined && this.pagination.prev == undefined) {
-        this.repositoriesList = this.getRepositories(this.pagination.next)
-        EventBus.$emit("enablePrevious")
+      if (
+        this.pagination.next == undefined &&
+        this.pagination.last == undefined
+      ) {
+        this.getRepositories(this.pagination.next);
+        EventBus.$emit("disableNext");
+        // Check if it's on the first page
+      } else if (
+        this.pagination.first == undefined &&
+        this.pagination.prev == undefined
+      ) {
+        this.repositoriesList = this.getRepositories(this.pagination.next);
+        EventBus.$emit("enablePrevious");
       } else {
-      // --- Enter here if you are on the mid page ---
-        this.repositoriesList = this.getRepositories(this.pagination.next)
+        // --- Enter here if you are on the mid page ---
+        this.repositoriesList = this.getRepositories(this.pagination.next);
         EventBus.$emit("enablePrevious");
         EventBus.$emit("enableNext");
       }
@@ -128,11 +139,14 @@ export default {
      */
     previousPage() {
       // Check if it's on the first page
-      if(this.pagination.first == undefined && this.pagination.prev == undefined) {
-        EventBus.$emit("disablePrevious")
+      if (
+        this.pagination.first == undefined &&
+        this.pagination.prev == undefined
+      ) {
+        EventBus.$emit("disablePrevious");
       } else {
-      // --- Enter here if you are on the mid page ---
-        this.repositoriesList = this.getRepositories(this.pagination.prev)
+        // --- Enter here if you are on the mid page ---
+        this.repositoriesList = this.getRepositories(this.pagination.prev);
         EventBus.$emit("enablePrevious");
         EventBus.$emit("enableNext");
       }
@@ -148,7 +162,7 @@ export default {
   created() {
     this.getMoreInfosUser();
   },
-   mounted() {
+  mounted() {
     EventBus.$on("nextPage", () => this.nextPage());
     EventBus.$on("previousPage", () => this.previousPage());
   }
@@ -156,9 +170,9 @@ export default {
 </script>
 
 <style scoped>
-
 .information,
-.table {
+.table,
+.pagination {
   max-width: 600px;
 }
 .arrowLeftIcon {
@@ -166,7 +180,7 @@ export default {
   margin: 10px 0 0 20px;
 }
 
-.arrowLeftIcon:hover { 
+.arrowLeftIcon:hover {
   cursor: pointer;
 }
 
@@ -206,9 +220,9 @@ export default {
 }
 
 .user-icon-social:hover {
-  color: var(--gray-color);  
+  color: var(--gray-color);
   cursor: pointer;
-  transition: all ease-in .3s;
+  transition: all ease-in 0.3s;
 }
 
 .table {
@@ -216,6 +230,66 @@ export default {
 }
 
 .pagination {
-  margin: 0 auto;
+  margin: 20px auto 40px auto;
+}
+
+/* table styles */
+.content-table {
+  overflow-x:auto;
+}
+
+table {
+  border: 2px solid var(--dark-color);
+  border-radius: 3px;
+  background-color: var(--white-color);
+}
+
+th {
+  background-color: var(--dark-color);
+  color: var(--white-color);
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+td {
+  background-color: var(--white-color);
+}
+
+th,
+td {
+  min-width: 120px;
+  padding: 10px 20px;
+}
+
+th.active {
+  color: var(--white-color);
+}
+
+th.active .arrow {
+  opacity: 1;
+}
+
+.arrow {
+  display: inline-block;
+  vertical-align: middle;
+  width: 0;
+  height: 0;
+  margin-left: 5px;
+  opacity: 0.66;
+}
+
+.arrow.asc {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid var(--white-color);
+}
+
+.arrow.dsc {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid var(--white-color);
 }
 </style>
