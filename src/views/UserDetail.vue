@@ -1,59 +1,43 @@
 <template>
   <div class="user-detail">
     <Navbar />
-    <ArrowLeftIcon size="1.5x" class="arrowLeftIcon" @click="backRouter()"></ArrowLeftIcon>
-    <!-- infomations -->
-    <div class="information">
-      <UserIcon size="2.5x" class="user-icon"></UserIcon>
-      <span class="user-id">{{ this.userMoreDetail.id }}</span>
-      <h1 class="user-login">{{ this.userMoreDetail.login }}</h1>
-      <div class="user-created">
-        <span>Created at</span>
-        <p>{{ this.userMoreDetail.created_at | formatDate }}</p>
+    <div v-if="loading">
+      <Loading class="loading" />
+    </div>
+    <div v-else>
+      <ArrowLeftIcon size="1.5x" class="arrowLeftIcon" @click="backRouter()"></ArrowLeftIcon>
+      <!-- infomations -->
+      <div class="information">
+        <UserIcon size="2.5x" class="user-icon"></UserIcon>
+        <span class="user-id">{{ this.userMoreDetail.id }}</span>
+        <h1 class="user-login">{{ this.userMoreDetail.login }}</h1>
+        <div class="user-created">
+          <span>Created at</span>
+          <p>{{ this.userMoreDetail.created_at | formatDate }}</p>
+        </div>
+        <a :href="this.userMoreDetail.html_url" target="_blank">
+          <GithubIcon size="1.5x" class="user-icon-social"></GithubIcon>
+        </a>
       </div>
-      <a :href="this.userMoreDetail.html_url" target="_blank">
-        <GithubIcon size="1.5x" class="user-icon-social"></GithubIcon>
-      </a>
+      <TableRepositories class="table" />
+      <Pagination class="pagination" />
     </div>
-
-    <!-- table repositories -->
-    <div class="content-table">
-      <table class="table">
-        <thead>
-          <tr>
-            <th v-for="column in gridColumns" :key="column">
-              {{ column }}
-              <span class="arrow"></span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="repository in repositoriesList" :key="repository.id">
-            <td>{{ repository.id }}</td>
-            <td>{{ repository.name }}</td>
-            <td>
-              <a class="repository-link" :href="repository.html_url" target="_blank">Link</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- pagination -->
-    <Pagination class="pagination" />
   </div>
 </template>
 
 <script>
+import Loading from "@/components/Loading";
+import EventBus from "../eventBus";
+import parser from "@/utils/linkParser.js";
 import users from "@/services/users.js";
 import repositories from "@/services/repositories.js";
-import Navbar from "@/components/Navbar";
 import { UserIcon } from "vue-feather-icons";
 import { GithubIcon } from "vue-feather-icons";
 import { ArrowLeftIcon } from "vue-feather-icons";
+
+import Navbar from "@/components/Navbar";
+import TableRepositories from "@/components/TableRepositories";
 import Pagination from "@/components/Pagination";
-import EventBus from "../eventBus";
-import parser from "@/utils/linkParser.js";
 
 export default {
   name: "userDetail",
@@ -64,18 +48,19 @@ export default {
     }
   },
   components: {
+    Loading,
     Navbar,
     UserIcon,
     GithubIcon,
     ArrowLeftIcon,
+    TableRepositories,
     Pagination
   },
   data() {
     return {
       userMoreDetail: {},
-      gridColumns: ["ID", "Name", "URL repository"],
-      repositoriesList: [],
-      pagination: ""
+      pagination: "",
+      loading: true
     };
   },
   methods: {
@@ -83,14 +68,20 @@ export default {
       this.$router.go(-1);
     },
     getMoreInfosUser() {
+      this.loading = true;
       users
         .get(this.login)
         .then(response => {
           this.userMoreDetail = response.data;
           this.getRepositories(this.userMoreDetail.repos_url);
+          this.loading = false;
         })
         .catch(err => {
-          console.log(err, "aaaaaaaaa");
+          this.$router.push({
+            name: "page404",
+            params: { message: "User not found" }
+          });
+          return err;
         });
     },
     getRepositories(link) {
@@ -98,15 +89,20 @@ export default {
         .list(link)
         .then(response => {
           this.pagination = parser(response.headers.link);
-          console.log("----------");
-          console.log(this.pagination.first);
-          console.log(this.pagination.prev);
-          console.log(this.pagination.next);
-          console.log(this.pagination.last);
           this.repositoriesList = response.data;
+          EventBus.$emit(
+            "getRepositories",
+            this.repositoriesList,
+            ["ID", "Name", "URL repository"],
+            false
+          );
         })
         .catch(err => {
-          console.log(err, "bbbbbbbbb");
+          this.$router.push({
+            name: "page404",
+            params: { message: "Repositories not found" }
+          });
+          return err;
         });
     },
     /**
@@ -115,23 +111,23 @@ export default {
     nextPage() {
       // Check if it's on the last page
       if (
-        this.pagination.next == undefined &&
-        this.pagination.last == undefined
+        this.pagination.next === undefined &&
+        this.pagination.last === undefined
       ) {
         this.getRepositories(this.pagination.next);
-        EventBus.$emit("disableNext");
+        EventBus.$emit("disableNext", true);
         // Check if it's on the first page
       } else if (
         this.pagination.first == undefined &&
         this.pagination.prev == undefined
       ) {
         this.repositoriesList = this.getRepositories(this.pagination.next);
-        EventBus.$emit("enablePrevious");
+        EventBus.$emit("disablePrevious", false);
       } else {
         // --- Enter here if you are on the mid page ---
         this.repositoriesList = this.getRepositories(this.pagination.next);
-        EventBus.$emit("enablePrevious");
-        EventBus.$emit("enableNext");
+        EventBus.$emit("disablePrevious", false);
+        EventBus.$emit("disableNext", false);
       }
     },
     /**
@@ -143,12 +139,12 @@ export default {
         this.pagination.first == undefined &&
         this.pagination.prev == undefined
       ) {
-        EventBus.$emit("disablePrevious");
+        EventBus.$emit("disablePrevious", true);
       } else {
         // --- Enter here if you are on the mid page ---
         this.repositoriesList = this.getRepositories(this.pagination.prev);
-        EventBus.$emit("enablePrevious");
-        EventBus.$emit("enableNext");
+        EventBus.$emit("disablePrevious", false);
+        EventBus.$emit("disableNext", false);
       }
     }
   },
@@ -175,9 +171,10 @@ export default {
 .pagination {
   max-width: 600px;
 }
+
 .arrowLeftIcon {
   position: absolute;
-  margin: 10px 0 0 20px;
+  margin: -10px 0 0 20px;
 }
 
 .arrowLeftIcon:hover {
@@ -233,63 +230,8 @@ export default {
   margin: 20px auto 40px auto;
 }
 
-/* table styles */
-.content-table {
-  overflow-x:auto;
-}
-
-table {
-  border: 2px solid var(--dark-color);
-  border-radius: 3px;
-  background-color: var(--white-color);
-}
-
-th {
-  background-color: var(--dark-color);
-  color: var(--white-color);
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-td {
-  background-color: var(--white-color);
-}
-
-th,
-td {
-  min-width: 120px;
-  padding: 10px 20px;
-}
-
-th.active {
-  color: var(--white-color);
-}
-
-th.active .arrow {
-  opacity: 1;
-}
-
-.arrow {
-  display: inline-block;
-  vertical-align: middle;
-  width: 0;
-  height: 0;
-  margin-left: 5px;
-  opacity: 0.66;
-}
-
-.arrow.asc {
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-bottom: 4px solid var(--white-color);
-}
-
-.arrow.dsc {
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 4px solid var(--white-color);
+.loading {
+  text-align: center;
+  margin: 100px 0;
 }
 </style>

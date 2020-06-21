@@ -1,10 +1,10 @@
-import api from './config'
+import api from "./config";
 
 export default {
-    /**
-     * @param {string} link - 
-     */
-    list: (link) => {
-        return api.get(link)
-    },
-}
+  /**
+   * @param {string} link -
+   */
+  list: (link) => {
+    return api.get(link);
+  },
+};

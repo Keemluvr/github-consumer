@@ -20,20 +20,21 @@ export default {
      * @param {String} page - destination page
      */
     fetchData(page) {
-      // Reactivates loading animation
       this.loading = true;
       // List a page
       users
         .list(page == undefined ? this.initialPage : page)
         .then((response) => {
           this.api = response.data;
-          // Save the links parser
           this.pagination = parser(response.headers.link);
-          // Disables loading animation
           this.loading = false;
           return this.api;
         })
         .catch((err) => {
+          this.$router.push({
+            name: "page404",
+            params: { message: "Users not found" },
+          });
           return err;
         });
     },

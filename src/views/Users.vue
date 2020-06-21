@@ -8,19 +8,19 @@
     </div>
     <!-- user listing -->
     <transition-group appear>
-    <div v-for="user in api" :key="user.id" class="user-list">
-      <router-link
-        tag="div"
-        :to="{ name:'userDetail', params: { login: user.login, user: user } }"
-        class="user"
-      >
-        <div class="user-left">
-          <UserIcon size="1.5x" class="user-icon"></UserIcon>
-          <p class="user-id">{{ user.id }}</p>
-        </div>
-        <p class="user-login">{{ user.login }}</p>
-      </router-link>
-    </div>
+      <div v-for="user in api" :key="user.id" class="user-list">
+        <router-link
+          tag="div"
+          :to="{ name:'userDetail', params: { login: user.login, user: user } }"
+          class="user"
+        >
+          <div class="user-left">
+            <UserIcon size="1.5x" class="user-icon"></UserIcon>
+            <p class="user-id">{{ user.id }}</p>
+          </div>
+          <p class="user-login">{{ user.login }}</p>
+        </router-link>
+      </div>
     </transition-group>
     <Pagination class="pagination" />
   </div>
@@ -33,7 +33,7 @@ import Pagination from "@/components/Pagination";
 import users from "@/services/users";
 import fetchData from "@/mixins/fetchData.js";
 import EventBus from "../eventBus";
-import { UserIcon } from 'vue-feather-icons'
+import { UserIcon } from "vue-feather-icons";
 
 export default {
   name: "users",
@@ -57,7 +57,8 @@ export default {
      * Logic to proceed to the next page
      */
     nextPage() {
-      EventBus.$emit("enablePrevious");
+      EventBus.$emit("disablePrevious", false);
+      EventBus.$emit("disableNext", false);
       this.previousPagination.push(this.api);
       console.log(this.previousPagination.length);
       this.previousPaginationUser = this.previousPagination[
@@ -72,7 +73,7 @@ export default {
       // Check if there is a previous page using the size of the array that stores the previous pages
       if (this.previousPagination.length === 1) {
         // --- If there is no previous page, enter here ---
-        EventBus.$emit("disablePrevious");
+        EventBus.$emit("disablePrevious", true);
         this.api = this.fetchData(this.initialPage);
         this.previousPagination = [];
         this.previousPaginationUser = null;
@@ -115,23 +116,27 @@ export default {
 }
 
 .user-list {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
   margin: 0 auto;
 }
 
 .user {
+  width: 100%;
   border-radius: 5px;
   display: block;
   text-decoration: none;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  box-shadow: 0 0.0875rem .4rem var(--gray-color);
+  box-shadow: 0 0.0875rem 0.4rem var(--gray-color);
   cursor: pointer;
 }
 
 .user:hover {
   box-shadow: 0 0.0875rem 1.4rem var(--gray-color);
-  transition: all ease-in .3s;
+  transition: all ease-in 0.3s;
 }
 .user:hover:first-child {
   background-color: var(--blue-color);
@@ -157,5 +162,12 @@ export default {
 
 .loading {
   text-align: center;
+  margin: 100px 0;
+}
+
+@media screen and (max-width: 680px) {
+  .user {
+    width: 80%;
+  }
 }
 </style>

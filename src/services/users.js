@@ -1,14 +1,14 @@
-import api from './config'
+import api from "./config";
 
 export default {
-    /**
-     * @param {string} link - destination link pagination
-     */
-    list: (link) => {
-        return api.get(link)
-    },
+  /**
+   * @param {string} link - destination link pagination
+   */
+  list: (link) => {
+    return api.get(link);
+  },
 
-    get: ( username ) => {
-        return api.get(`/users/${username}`)
-    }
-}
+  get: (username) => {
+    return api.get(`/users/${username}`);
+  },
+};

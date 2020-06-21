@@ -3,13 +3,15 @@ import VueRouter from "vue-router";
 // Views
 import Users from "../views/Users.vue";
 import UserDetail from "../views/UserDetail.vue";
+import Page404 from "../views/Page404.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "*",
-    redirect: "/"
+    component: Page404,
+    name: "page404",
   },
   {
     path: "/",
@@ -17,11 +19,11 @@ const routes = [
     component: Users,
   },
   {
-    path: '/:login',
-    name: 'userDetail',
+    path: "/:login",
+    name: "userDetail",
     component: UserDetail,
-    props: true
-  }
+    props: true,
+  },
 ];
 
 const router = new VueRouter({
