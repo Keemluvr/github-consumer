@@ -8,7 +8,7 @@ export default {
         return api.get(link)
     },
 
-    userCreatedAt: ( username ) => {
+    get: ( username ) => {
         return api.get(`/users/${username}`)
     }
 }

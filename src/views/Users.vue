@@ -1,82 +1,97 @@
 <template>
   <div class="users">
+    <Navbar />
+
+    <h1 class="title">Users</h1>
+    <div v-if="loading">
+      <Loading class="loading" />
+    </div>
     <!-- user listing -->
-    <div v-for="user in api" :key="user.id" class="user">
-      <router-link :to="{ name:'userDetail', params: { login: user.login, user: user } }">
-        <p>{{ user.id }} - {{ user.login }}</p>
+    <transition-group appear>
+    <div v-for="user in api" :key="user.id" class="user-list">
+      <router-link
+        tag="div"
+        :to="{ name:'userDetail', params: { login: user.login, user: user } }"
+        class="user"
+      >
+        <div class="user-left">
+          <UserIcon size="1.5x" class="user-icon"></UserIcon>
+          <p class="user-id">{{ user.id }}</p>
+        </div>
+        <p class="user-login">{{ user.login }}</p>
       </router-link>
     </div>
-    <!-- pagination -->
-    <PaginationUser />
+    </transition-group>
+    <Pagination class="pagination" />
   </div>
 </template>
 
 <script>
-import PaginationUser from "@/components/PaginationUser";
+import Loading from "@/components/Loading";
+import Navbar from "@/components/Navbar";
+import Pagination from "@/components/Pagination";
 import users from "@/services/users";
 import fetchData from "@/mixins/fetchData.js";
 import EventBus from "../eventBus";
+import { UserIcon } from 'vue-feather-icons'
 
 export default {
   name: "users",
-  mixins:[fetchData],
+  mixins: [fetchData],
   components: {
-    PaginationUser
+    Pagination,
+    Navbar,
+    UserIcon,
+    Loading
   },
   methods: {
     /**
      * Initializes the variable that contains the first page
      */
     initializePage() {
-       users.list(this.initialPage).then(response => {
-         this.firstPage = response.data
-       })
+      users.list(this.initialPage).then(response => {
+        this.firstPage = response.data;
+      });
     },
     /**
      * Logic to proceed to the next page
      */
     nextPage() {
-      // Add the previous pages to the array
-      this.previousPagination.push(this.api) 
-      // Saves the first user from the previous page
-      this.previousPaginationUser = this.previousPagination[this.previousPagination.length - 1][0].id
-      // Search the next page
-      this.api = this.fetchData(this.pagination.next)
-      // Sends the event to activate the previous button 
-      EventBus.$emit("enablePrevious")
+      EventBus.$emit("enablePrevious");
+      this.previousPagination.push(this.api);
+      console.log(this.previousPagination.length);
+      this.previousPaginationUser = this.previousPagination[
+        this.previousPagination.length - 1
+      ][0].id;
+      this.api = this.fetchData(this.pagination.next);
     },
     /**
      * Logic to return to the page
      */
     previousPage() {
       // Check if there is a previous page using the size of the array that stores the previous pages
-      if( this.previousPagination.length  === 1) {
+      if (this.previousPagination.length === 1) {
         // --- If there is no previous page, enter here ---
-        // Sends an event to disable the previous button
-        EventBus.$emit("disablePrevious")
-        // Returns to the initial page
-        this.api = this.fetchData(this.initialPage)
-        // Resets the array with the previous pages to empty
-        this.previousPagination = []
-        // Resets the variable that saves the first user on the previous page to null
-        this.previousPaginationUser = null
+        EventBus.$emit("disablePrevious");
+        this.api = this.fetchData(this.initialPage);
+        this.previousPagination = [];
+        this.previousPaginationUser = null;
       } else {
         // --- If there is a previous page enter here ---
-        // Takes the previous page in the array that stores all the previous pages
-        let previous = this.previousPagination[this.previousPagination.length - 1]
-        // Search this page
-        this.api = this.fetchData(`users?since=${previous[0].id - 1}`)
-        // Remove it from the array that saves all previous pages
-        this.previousPagination.pop()
-        // Updates the variable that contains the user on the previous page
-        this.previousPaginationUser = this.previousPagination[this.previousPagination.length - 1][0].id
+        let previous = this.previousPagination[
+          this.previousPagination.length - 1
+        ];
+        this.api = this.fetchData(`users?since=${previous[0].id - 1}`);
+        this.previousPagination.pop();
+        this.previousPaginationUser = this.previousPagination[
+          this.previousPagination.length - 1
+        ][0].id;
       }
-
     }
   },
   created() {
-    this.initializePage()
-    this.fetchData()
+    this.initializePage();
+    this.fetchData();
   },
   mounted() {
     EventBus.$on("nextPage", () => this.nextPage());
@@ -85,8 +100,64 @@ export default {
 };
 </script>
 
-<style>
-p {
-  font-size: 12px;
+<style scoped>
+.title {
+  font-size: 2.5em;
+  font-weight: 400;
+  text-align: center;
+  margin: 30px auto 40px auto;
+}
+
+.title,
+.user-list,
+.pagination {
+  max-width: 600px;
+}
+
+.user-list {
+  margin: 0 auto;
+}
+
+.user {
+  border-radius: 5px;
+  display: block;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  box-shadow: 0 0.0875rem .4rem var(--gray-color);
+  cursor: pointer;
+}
+
+.user:hover {
+  box-shadow: 0 0.0875rem 1.4rem var(--gray-color);
+  transition: all ease-in .3s;
+}
+.user:hover:first-child {
+  background-color: var(--blue-color);
+  color: white;
+}
+
+.user-left {
+  background-color: var(--gray-color);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.user-login {
+  padding-left: 20px;
+}
+
+.pagination {
+  margin: 0 auto;
+  padding: 10px 0 30px 25%;
+  text-align: center;
+}
+
+.loading {
+  text-align: center;
 }
 </style>
