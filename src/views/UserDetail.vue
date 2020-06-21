@@ -19,7 +19,7 @@
           <GithubIcon size="1.5x" class="user-icon-social"></GithubIcon>
         </a>
       </div>
-      <TableRepositories class="table" />
+      <Table class="table" />
       <Pagination class="pagination" />
     </div>
   </div>
@@ -52,7 +52,7 @@ export default {
     UserIcon,
     GithubIcon,
     ArrowLeftIcon,
-    'TableRepositories': () => import('../components/TableRepositories'),
+    'Table': () => import('../components/Table'),
     Pagination
   },
   data() {

@@ -34,7 +34,7 @@ import EventBus from "../eventBus";
 import Loading from "@/components/Loading";
 
 export default {
-  name: "tableRepositories",
+  name: "table",
   data() {
     return {
       gridColumns: [],
