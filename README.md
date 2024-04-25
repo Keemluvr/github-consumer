@@ -1,37 +1,34 @@
-# Be the Hero
+# GitHub Consumer
 
-![GIF do projeto](https://github.com/Keemluvr/be-the-hero/blob/master/demo.gif)
-
-[![Netlify Status](https://api.netlify.com/api/v1/badges/d8e232ff-8521-401c-8857-dddb990b505d/deploy-status)](https://app.netlify.com/sites/to-be-hero/deploys)
+![GIF do projeto](https://github.com/Keemluvr/github-consumer/blob/master/demo.gif)
 
 ## Sobre este projeto
 
-Esse foi projeto realizado durante a Semana OmniStack 11.0 da [RocketSeat](https://www.rocketseat.com.br/), o objetivo foi construir uma aplicação em React JS do zero, tendo assim o desenvolvimento do backend, frontend e mobile, onde visa dar oportunidade para as pessoas ajudarem ONGS.
+Esse projeto foi um projeto pessoal para estudos, onde o objetivo foi construir uma aplicação em Vue, onde é feito a listagem dos usuários usando a API do Github, tendo a possíbilidade de ver os repositórios que o usuário possui ao entrar no seu perfil.
 
 ## Visualizar <a name = "deployment"></a>
 
-| 🖥 Protótipo                                                                                         | 💻 Frontend                                | 🗃 Backend                                       |
-| --------------------------------------------------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------- |
-| [Figma](https://www.figma.com/file/2C2yvw7jsCOGmaNUDftX9n/Be-The-Hero---OmniStack-11?node-id=0%3A1) | [Netlify](https://to-be-hero.netlify.app/) | [Render](https://be-the-hero-gfqk.onrender.com) |
+| 💻 Frontend                                   |
+| --------------------------------------------- |
+| [Vercel](https://github-consumer.vercel.app/) |
 
 ## Pré-requisitos
 
 Para instalar você vai precisar:
 
 - Node.js
-- npm
 
 ## Instalação
 
 Instalação das dependências do projeto:
 
-1. Entre no repositório do backend/frontend/mobile e execute o seguinte comando:  
+1. Entre no repositório e execute o seguinte comando:  
    `npm install`
 
 ## Para produção:
 
-1. Entre no repositório do backend/frontend/mobile e execute o seguinte comando:  
-   `npm install`
+1. Entre no repositório e execute o seguinte comando:  
+   `npm run serve`
 
 Executa o aplicativo no modo de desenvolvimento.
 
@@ -43,18 +40,12 @@ A página será recarregada se você fizer edições.
 
 Para o desenvolvimento foi necessário:
 
-- Utilizar a biblioteca React JS
-- Utilizar Jest para a aplicação dos testes unitários e de integração
-- Utilizar o Celebrate para validação dos endpoints
-- Utilizar o React Router para o roteamento das páginas
-- Utilizar Expo Mail Composer para envio de emails
-- Utilizar o Expo para o desenvolvimento do app
+- Utilizar a biblioteca Vue
+- Utilizar o Axios para fazer as promises para a API
+- Utilizar a API do GitHub para listar os usuários
 
 ## Construído com
 
-| 🗃 Backend                         | 💻 Frontend                             | 📱 Mobile                               |
-| --------------------------------- | --------------------------------------- | --------------------------------------- |
-| [NodeJs](https://nodejs.org/en/)  | [React](https://pt-br.reactjs.org)      | [React Native](https://reactnative.dev) |
-| [Express](https://expressjs.com/) | [Axios](https://github.com/axios/axios) | [Expo](https://expo.io)                 |
-| [Knex](http://knexjs.org)         |                                         | [Axios](https://github.com/axios/axios) |
-| [Celebrate](http://knexjs.org)    |                                         |
+| 💻 Frontend                 |
+| --------------------------- |
+| [Vue.js](https://vuejs.org) |
